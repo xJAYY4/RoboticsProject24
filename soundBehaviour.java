@@ -1,4 +1,5 @@
 import lejos.hardware.lcd.LCD;
+import lejos.hardware.Sound;
 import lejos.robotics.subsumption.Behavior;
 
 public class SoundBehavior implements Behavior {
@@ -11,14 +12,17 @@ public class SoundBehavior implements Behavior {
     }
 
     public void action() {
+        suppressed = false;
+        LCD.clear();
         LCD.drawString("Behavior 2: Sound", 0, 1);
+
         if (BehaviorRobot.Ultrasound_State == 0) {
-            motorLeft.rotate(180);
-            motorRight.rotate(-180);
+            // Rotate 90° counterclockwise
+            BehaviorRobot.motorLeft.rotate(-180, true);
+            BehaviorRobot.motorRight.rotate(180);
         } else {
-            motorLeft.stop();
-            motorRight.stop();
-            System.out.println("Victory Dance!");
+            // Play a "victory dance" tune and terminate
+            Sound.beepSequenceUp();
             System.exit(0);
         }
     }
