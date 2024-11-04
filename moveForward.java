@@ -1,34 +1,28 @@
-import lejos.hardware.motor.EV3LargeRegulatedMotor;
+// File: ForwardBehavior.java
+import lejos.hardware.lcd.LCD;
 import lejos.robotics.subsumption.Behavior;
 
-public class MoveForward implements Behavior {
-    private final EV3LargeRegulatedMotor engineR;
-    private final EV3LargeRegulatedMotor engineL;
-    private boolean isActive = false;
+public class ForwardBehavior implements Behavior {
+    private boolean suppressed = false;
 
-    public MoveForward(EV3LargeRegulatedMotor motorR, EV3LargeRegulatedMotor motorL) {
-        engineR = motorR;
-        engineL = motorL;
-    }
-
-    @Override
     public boolean takeControl() {
-        return true; // Always active
+        return true; // Always active, lowest priority
     }
 
-    @Override
     public void action() {
-        isActive = true;
-        engineR.setSpeed(BehaviorRobot.WANDER_SPEED);
-        engineL.setSpeed(BehaviorRobot.WANDER_SPEED);
-        engineR.forward();
-        engineL.forward();
+        LCD.drawString("Behavior 0: Forward", 0, 1);
+        motorLeft.setSpeed(BehaviorRobot.Wander_Speed);
+        motorRight.setSpeed(BehaviorRobot.Wander_Speed);
+        motorLeft.forward();
+        motorRight.forward();
+        while (!suppressed) {
+            Thread.yield();
+        }
+        motorLeft.stop();
+        motorRight.stop();
     }
 
-    @Override
     public void suppress() {
-        isActive = false;
-        engineR.stop(true);
-        engineL.stop(true);
+        suppressed = true;
     }
 }
