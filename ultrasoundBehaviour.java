@@ -1,39 +1,37 @@
-import lejos.hardware.motor.EV3LargeRegulatedMotor;
-import lejos.hardware.sensor.EV3UltrasonicSensor;
+// File: UltrasoundBehavior.java
+import lejos.hardware.lcd.LCD;
 import lejos.robotics.subsumption.Behavior;
 
 public class UltrasoundBehavior implements Behavior {
-    private final EV3UltrasonicSensor ultrasonicSensor;
-    private final EV3LargeRegulatedMotor engineR;
-    private final EV3LargeRegulatedMotor engineL;
-    private boolean isActive = false;
-    private float[] distanceSample;
+    private boolean suppressed = false;
 
-    public UltrasoundBehavior(EV3UltrasonicSensor sensor, EV3LargeRegulatedMotor motorR, EV3LargeRegulatedMotor motorL) {
-        this.ultrasonicSensor = sensor;
-        this.engineR = motorR;
-        this.engineL = motorL;
-        this.distanceSample = new float[sensor.sampleSize()];
-    }
-
-    @Override
     public boolean takeControl() {
-        ultrasonicSensor.fetchSample(distanceSample, 0);
-        return distanceSample[0] < 0.25;
+        float[] sample = new float[BehaviorRobot.ultrasonicSensor.sampleSize()];
+        BehaviorRobot.ultrasonicSensor.fetchSample(sample, 0);
+        float distance = sample[0] * 100; // convert to cm
+        return (BehaviorRobot.Ultrasound_State == 0 && distance < 25) ||
+               (BehaviorRobot.Ultrasound_State == 1 && distance < 15);
     }
 
-    @Override
     public void action() {
-        isActive = true;
-        if (BehaviorRobot.Ultrasound_State == 0) {
-            // Track wall with sensor facing right
-        } else {
-            // Track wall with sensor facing left
-        }
+        LCD.drawString("Behavior 1: Ultrasound", 0, 1);
+        float distance;
+        do {
+            BehaviorRobot.ultrasonicSensor.fetchSample(sample, 0);
+            distance = sample[0] * 100; // convert to cm
+            if (BehaviorRobot.Ultrasound_State == 0) {
+                motorLeft.forward();
+                motorRight.backward();
+            } else {
+                motorLeft.backward();
+                motorRight.forward();
+            }
+        } while (!suppressed && distance < BehaviorRobot.Wall_Distance);
+        motorLeft.stop(true);
+        motorRight.stop();
     }
 
-    @Override
     public void suppress() {
-        isActive = false;
+        suppressed = true;
     }
 }
