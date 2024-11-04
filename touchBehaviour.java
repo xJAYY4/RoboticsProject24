@@ -1,4 +1,5 @@
 import lejos.hardware.lcd.LCD;
+import lejos.hardware.Sound;
 import lejos.robotics.subsumption.Behavior;
 
 public class TouchBehavior implements Behavior {
@@ -9,12 +10,14 @@ public class TouchBehavior implements Behavior {
     }
 
     public void action() {
+        LCD.clear();
         LCD.drawString("Behavior 4: Touch", 0, 1);
-        motorLeft.backward();
-        motorRight.backward();
-        Thread.sleep(3000);
-        motorLeft.stop();
-        motorRight.stop();
+
+        // Reverse with P control
+        BehaviorRobot.motorLeft.backward();
+        BehaviorRobot.motorRight.backward();
+        Sound.beepSequence();
+        Thread.sleep(3000); // Pause for 3 seconds
     }
 
     public void suppress() {}
