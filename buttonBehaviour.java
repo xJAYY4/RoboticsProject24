@@ -1,5 +1,6 @@
 import lejos.hardware.Button;
 import lejos.hardware.lcd.LCD;
+import lejos.hardware.Sound;
 import lejos.robotics.subsumption.Behavior;
 
 public class ButtonBehavior implements Behavior {
@@ -8,8 +9,9 @@ public class ButtonBehavior implements Behavior {
     }
 
     public void action() {
+        LCD.clear();
         LCD.drawString("Behavior 5: Button", 0, 1);
-        System.out.println("Exiting...");
+        Sound.beepSequence();
         System.exit(0);
     }
 
