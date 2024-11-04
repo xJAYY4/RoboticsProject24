@@ -1,37 +1,21 @@
-import lejos.hardware.motor.EV3LargeRegulatedMotor;
-import lejos.hardware.sensor.EV3TouchSensor;
+import lejos.hardware.lcd.LCD;
 import lejos.robotics.subsumption.Behavior;
 
 public class TouchBehavior implements Behavior {
-    private final EV3TouchSensor touchSensor;
-    private final EV3LargeRegulatedMotor engineR;
-    private final EV3LargeRegulatedMotor engineL;
-    private boolean isActive = false;
-    private float[] touchSample;
-
-    public TouchBehavior(EV3TouchSensor sensor, EV3LargeRegulatedMotor motorR, EV3LargeRegulatedMotor motorL) {
-        this.touchSensor = sensor;
-        this.engineR = motorR;
-        this.engineL = motorL;
-        this.touchSample = new float[sensor.sampleSize()];
-    }
-
-    @Override
     public boolean takeControl() {
-        touchSensor.fetchSample(touchSample, 0);
-        return touchSample[0] == 1.0;
+        float[] sample = new float[BehaviorRobot.touchSensor.sampleSize()];
+        BehaviorRobot.touchSensor.fetchSample(sample, 0);
+        return sample[0] == 1;
     }
 
-    @Override
     public void action() {
-        engineR.backward();
-        engineL.backward();
+        LCD.drawString("Behavior 4: Touch", 0, 1);
+        motorLeft.backward();
+        motorRight.backward();
+        Thread.sleep(3000);
+        motorLeft.stop();
+        motorRight.stop();
     }
 
-    @Override
-    public void suppress() {
-        isActive = false;
-        engineR.stop(true);
-        engineL.stop(true);
-    }
+    public void suppress() {}
 }
