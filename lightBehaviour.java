@@ -9,10 +9,12 @@ public class LightBehavior implements Behavior {
     }
 
     public void action() {
+        LCD.clear();
         LCD.drawString("Behavior 3: Light", 0, 1);
         BehaviorRobot.Ultrasound_State = 1;
         BehaviorRobot.Wall_Distance = 20;
-        BehaviorRobot.ultrasonicSensor.rotate(180);
+        // Simulate rotating the sensor 180 degrees
+        BehaviorRobot.ultrasonicSensor.close();
     }
 
     public void suppress() {}
