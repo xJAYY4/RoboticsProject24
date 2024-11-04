@@ -1,40 +1,29 @@
-import lejos.hardware.motor.EV3LargeRegulatedMotor;
-import lejos.hardware.sensor.EV3SoundSensor;
+import lejos.hardware.lcd.LCD;
 import lejos.robotics.subsumption.Behavior;
 
 public class SoundBehavior implements Behavior {
-    private final EV3LargeRegulatedMotor engineR;
-    private final EV3LargeRegulatedMotor engineL;
-    private final EV3SoundSensor soundSensor;
-    private boolean isActive = false;
-    private float[] soundSample;
+    private boolean suppressed = false;
 
-    public SoundBehavior(EV3LargeRegulatedMotor motorR, EV3LargeRegulatedMotor motorL, EV3SoundSensor sensor) {
-        this.engineR = motorR;
-        this.engineL = motorL;
-        this.soundSensor = sensor;
-        this.soundSample = new float[sensor.sampleSize()];
-    }
-
-    @Override
     public boolean takeControl() {
-        soundSensor.fetchSample(soundSample, 0);
-        return soundSample[0] > BehaviorRobot.SOUND_THRESHOLD;
+        float[] sample = new float[BehaviorRobot.soundSensor.sampleSize()];
+        BehaviorRobot.soundSensor.fetchSample(sample, 0);
+        return sample[0] > BehaviorRobot.Sound_Threshold;
     }
 
-    @Override
     public void action() {
+        LCD.drawString("Behavior 2: Sound", 0, 1);
         if (BehaviorRobot.Ultrasound_State == 0) {
-            engineR.rotate(90); // Rotate 90 degrees counterclockwise
+            motorLeft.rotate(180);
+            motorRight.rotate(-180);
         } else {
-            engineL.rotate(90);
-            // Play victory tune, terminate
+            motorLeft.stop();
+            motorRight.stop();
+            System.out.println("Victory Dance!");
             System.exit(0);
         }
     }
 
-    @Override
     public void suppress() {
-        isActive = false;
+        suppressed = true;
     }
 }
