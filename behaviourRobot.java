@@ -10,18 +10,21 @@ import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
 
 public class BehaviorRobot {
+    // Project-specific configuration variables
     public static final int Wander_Speed = 350;
     public static int Ultrasound_State = 0;
     public static final int Wall_Distance = 20;
     public static final int Sound_Threshold = 60;
 
-    EV3LargeRegulatedMotor motorLeft = new EV3LargeRegulatedMotor(MotorPort.B);
-    EV3LargeRegulatedMotor motorRight = new EV3LargeRegulatedMotor(MotorPort.C);
-    EV3UltrasonicSensor ultrasonicSensor = new EV3UltrasonicSensor(SensorPort.S3);
-    EV3TouchSensor touchSensor = new EV3TouchSensor(SensorPort.S1);
-    EV3SoundSensor soundSensor = new EV3SoundSensor(SensorPort.S4);
+    // Motors and sensors
+    public static EV3LargeRegulatedMotor motorLeft = new EV3LargeRegulatedMotor(MotorPort.B);
+    public static EV3LargeRegulatedMotor motorRight = new EV3LargeRegulatedMotor(MotorPort.C);
+    public static EV3UltrasonicSensor ultrasonicSensor = new EV3UltrasonicSensor(SensorPort.S3);
+    public static EV3TouchSensor touchSensor = new EV3TouchSensor(SensorPort.S1);
+    public static EV3SoundSensor soundSensor = new EV3SoundSensor(SensorPort.S2);
 
     public static void main(String[] args) {
+        // Define and prioritize behaviors
         Behavior[] behaviors = {
             new ForwardBehavior(),
             new UltrasoundBehavior(),
@@ -31,6 +34,8 @@ public class BehaviorRobot {
             new ButtonBehavior()
         };
         Arbitrator arbitrator = new Arbitrator(behaviors);
+
+        // Display initial message
         LCD.drawString("Starting Arbitrator", 0, 0);
         arbitrator.go();
     }
